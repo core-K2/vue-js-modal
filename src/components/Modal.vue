@@ -807,11 +807,10 @@ export default {
           document.removeEventListener('mouseup', handleDraggableMouseup)
           document.removeEventListener('touchend', handleDraggableMouseup)
 
-          event.preventDefault()
         }
 
         dragger.addEventListener('mousedown', handleDraggableMousedown)
-        dragger.addEventListener('touchstart', handleDraggableMousedown)
+        dragger.addEventListener('touchstart', handleDraggableMousedown, { passive:true })
       }
     },
 
