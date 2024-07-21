@@ -29,7 +29,6 @@
         tabindex="0"
         :style="buttonStyle"
         :key="index"
-        v-html="button.title"
         @click.stop="click(index, $event)"
       >{{ button.title }}</button>
     </div>
