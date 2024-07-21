@@ -263,7 +263,7 @@ export default {
   /**
    * Removes global listeners
    */
-  beforeDestroy() {
+   beforeUnmount() {
     this.$modal.subscription.$off('toggle', this.onToggle)
 
     window.removeEventListener('resize', this.onWindowResize)
@@ -498,7 +498,9 @@ export default {
 
     beforeModalTransitionLeave() {
       this.modalTransitionState = TransitionState.Leaving
-      this.resizeObserver.unobserve(this.$refs.modal)
+      if (this.$refs.modal) {
+        this.resizeObserver.unobserve(this.$refs.modal)
+      }
 
       if (this.$focusTrap.enabled()) {
         this.$focusTrap.disable()

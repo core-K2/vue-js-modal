@@ -69,6 +69,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "resize-observer-polyfill": "^1.5.1"
+    "resize-observer-polyfill": "^1.5.1",
+    "tiny-emitter": "^2.1.0"
   }
 }

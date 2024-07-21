@@ -1,14 +1,27 @@
 import { UNSUPPORTED_ARGUMENT_ERROR } from './utils/errors'
 import { createDivInBody } from './utils'
 import ModalsContainer from './components/ModalsContainer.vue'
+import emitter from 'tiny-emitter/instance'
 
-const PluginCore = (Vue, options = {}) => {
-  const subscription = new Vue()
+const PluginCore = (app, options = {}) => {
+  var gp = app.config.globalProperties;
+  var v2 = !gp;
+  const subscription = v2 ? new app() : {
+    $on: (...args) => emitter.on(...args),
+    $once: (...args) => emitter.once(...args),
+    $off: (...args) => emitter.off(...args),
+    $emit: (...args) => emitter.emit(...args),
+  };
 
   const context = {
     root: null,
     componentName: options.componentName || 'Modal'
   }
+
+  // add for Vue3
+  subscription.$on('set-modal-container', container => {
+    context.root.__modalContainer = container
+  });
 
   const showStaticModal = (name, params) => {
     subscription.$emit('toggle', name, true, params)
@@ -25,8 +38,8 @@ const PluginCore = (Vue, options = {}) => {
     const defaults = options.dynamicDefaults || {}
 
     container?.add(
-      component,
-      componentProps,
+      Vue.markRaw(component),
+      Vue.markRaw(componentProps),
       componentSlots,
       { ...defaults, ...modalProps },
       modalEvents
@@ -37,17 +50,24 @@ const PluginCore = (Vue, options = {}) => {
    * Creates a container for modals in the root Vue component.
    *
    * @param {Vue} parent
-   */
-  const setDynamicModalContainer = parent => {
+   * @param {Vue} app (Vue3)
+  */
+  const setDynamicModalContainer = ((parent, app) => {
     context.root = parent
 
     const element = createDivInBody()
 
-    new Vue({
-      parent,
-      render: h => h(ModalsContainer)
-    }).$mount(element)
-  }
+    if (v2) {
+      new Vue({
+        parent,
+        render: h => h(ModalsContainer)
+      }).$mount(element)
+    } else {
+      const vnode = Vue.createVNode(ModalsContainer)
+      vnode.appContext = app._context
+      Vue.render(vnode, element)
+    }
+  });
 
   const show = (...args) => {
     const [modal] = args
