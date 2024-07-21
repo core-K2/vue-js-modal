@@ -2,6 +2,7 @@ const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'production',
@@ -56,5 +57,10 @@ module.exports = {
       }
     ]
   },
-  plugins: [new VueLoaderPlugin()]
+  plugins: [
+    new webpack.DefinePlugin({
+      __VERSION__: JSON.stringify(require('../package.json').version),
+    }),
+    new VueLoaderPlugin()
+  ]
 }
