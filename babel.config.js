@@ -5,7 +5,7 @@ module.exports = function(babel) {
     presets: ['@babel/preset-env'],
     plugins: [
       '@babel/plugin-transform-object-rest-spread',
-      '@babel/plugin-proposal-optional-chaining'
+      '@babel/plugin-transform-optional-chaining'
     ]
   }
 }
