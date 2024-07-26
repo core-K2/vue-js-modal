@@ -28,7 +28,7 @@ const Plugin = {
           const root = caller.$root
 
           if (!plugin.context.root) {
-            plugin.setDynamicModalContainer(root)
+            plugin.setDynamicModalContainer(root, app)
           }
         }
 
